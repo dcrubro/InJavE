@@ -1,5 +1,6 @@
 package InJavE2D.util;
 
+import InJavE2D.object.components.Spritesheet;
 import InJavE2D.render.Shader;
 import InJavE2D.render.Texture;
 import org.lwjgl.system.CallbackI;
@@ -12,6 +13,7 @@ import java.util.Map;
 public class AssetPool {
     private static Map<String, Shader> shaders = new HashMap<>();
     private static Map<String, Texture> textures = new HashMap<>();
+    private static Map<String, Spritesheet> spritesheets = new HashMap<>();
 
     public static Shader getShader(String resourceName) {
         File file = new File(resourceName);
@@ -34,5 +36,20 @@ public class AssetPool {
             AssetPool.textures.put(file.getAbsolutePath(), texture);
             return texture;
         }
+    }
+
+    public static void addSpritesheet(String resourceName, Spritesheet spritesheet) {
+        File file = new File(resourceName);
+        if (!AssetPool.spritesheets.containsKey(file.getAbsolutePath())) {
+            AssetPool.spritesheets.put(file.getAbsolutePath(), spritesheet);
+        }
+    }
+
+    public static Spritesheet getSpritesheet(String resourceName) {
+        File file = new File(resourceName);
+        if (!AssetPool.spritesheets.containsKey(file.getAbsolutePath())) {
+            assert false : "ERROR: (AssetPool) Tried to access spritesheet: '" + resourceName + "' but it's not added to AssetPool!";
+        }
+        return AssetPool.spritesheets.getOrDefault(file.getAbsolutePath(), null);
     }
 }

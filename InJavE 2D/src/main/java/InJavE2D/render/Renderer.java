@@ -2,6 +2,7 @@ package InJavE2D.render;
 
 import InJavE2D.object.GameObject;
 import InJavE2D.object.components.SpriteRenderer;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +26,12 @@ public class Renderer {
         boolean added = false;
         for (RenderBatch batch : batches) {
             if (batch.hasRoom()) {
-                batch.addSprite(spr);
-                added = true;
-                break;
+                Texture tex = spr.getTexture();
+                if (tex == null || (batch.hasTexture(tex) || batch.hasTextureRoom())) {
+                    batch.addSprite(spr);
+                    added = true;
+                    break;
+                }
             }
         }
 

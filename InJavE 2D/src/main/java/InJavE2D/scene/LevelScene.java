@@ -14,6 +14,11 @@ public class LevelScene extends Scene {
     }
 
     @Override
+    public Scene getCurrentScene() {
+        return this;
+    }
+
+    @Override
     public void fixedUpdate(float fixedTimeDelay) {
 
     }

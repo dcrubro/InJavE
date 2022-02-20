@@ -3,25 +3,21 @@ package InJavE2D.scene;
 import InJavE2D.input.KeyListener;
 import InJavE2D.object.GameObject;
 import InJavE2D.object.Transform;
+import InJavE2D.object.components.Sprite;
 import InJavE2D.object.components.SpriteRenderer;
+import InJavE2D.object.components.Spritesheet;
 import InJavE2D.render.Camera;
 import InJavE2D.scripting.InJavEScript;
 import InJavE2D.util.AssetPool;
 import InJavE2D.util.Debug;
-import UserScripts.player.PlayerMovement;
+import UserScripts.player.TestKotlinScript;
 import org.joml.Vector2f;
-import org.joml.Vector4f;
-import org.lwjgl.system.CallbackI;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
 
 public class LevelEditorScene extends Scene {
 
-    private List<InJavEScript> scripts;
     private GameObject player;
 
     public LevelEditorScene() {
@@ -29,15 +25,18 @@ public class LevelEditorScene extends Scene {
     }
 
     public void init() {
+        loadResources();
+
         this.camera = new Camera(new Vector2f(-340, -180));
-        this.scripts = new ArrayList<>();
+
+        Spritesheet sprites = AssetPool.getSpritesheet("assets/spritesheets/spritesheet.png");
 
         GameObject obj1 = new GameObject("Obj1", new Transform(new Vector2f(100,100), new Vector2f(256,256)));
-        obj1.addComponent(new SpriteRenderer(AssetPool.getTexture("assets/textures/GhostCharacter-Fixed.png")));
+        obj1.addComponent(new SpriteRenderer(new Sprite(AssetPool.getTexture("assets/textures/GhostCharacter-Fixed.png"))));
         this.addGameObjectToScene(obj1);
 
         GameObject obj2 = new GameObject("Obj2", new Transform(new Vector2f(400,100), new Vector2f(256,256)));
-        obj2.addComponent(new SpriteRenderer(AssetPool.getTexture("assets/textures/GhostCharacter-Fixed-Blue.jpg")));
+        obj2.addComponent(new SpriteRenderer(sprites.getSprite(10)));
         this.addGameObjectToScene(obj2);
 
         /*int xOffset = 10;
@@ -61,21 +60,18 @@ public class LevelEditorScene extends Scene {
 
         /*player = new GameObject("Player", new Transform(new Vector2f(-150, -150), new Vector2f(50, 50)));
         player.addComponent(new SpriteRenderer(new Vector4f(50, 50, 1, 1)));
-        this.addGameObjectToScene(player);
+        this.addGameObjectToScene(player);*/
 
-        scripts.add(new PlayerMovement(player, 100f, this));*/
-
-        loadResources();
-        for (InJavEScript scr : scripts) {
-            scr.start();
-        }
+        this.addScriptToScene(new TestKotlinScript(getCurrentScene()));
 
         Debug.log("FixedUpdateDelay: " + String.valueOf(fixedTimeDelay));
     }
 
     private void loadResources() {
         AssetPool.getShader("assets/shaders/default.glsl");
-        //AssetPool.getTexture("assets/shaders/default.glsl");
+        AssetPool.addSpritesheet("assets/spritesheets/spritesheet.png",
+                                 new Spritesheet(AssetPool.getTexture("assets/spritesheets/spritesheet.png"),
+                                                 16, 16, 26, 0));
     }
 
     @Override
@@ -97,7 +93,7 @@ public class LevelEditorScene extends Scene {
             go.update(deltaTime);
         }
 
-        for (InJavEScript scr : scripts) {
+        for (InJavEScript scr : sceneScripts) {
             scr.update(deltaTime);
         }
 
@@ -107,5 +103,10 @@ public class LevelEditorScene extends Scene {
     @Override
     public void fixedUpdate(float fixedTimeDelay) {
 
+    }
+
+    @Override
+    public Scene getCurrentScene() {
+        return this;
     }
 }

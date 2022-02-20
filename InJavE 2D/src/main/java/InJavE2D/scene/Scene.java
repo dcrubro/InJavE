@@ -3,6 +3,7 @@ package InJavE2D.scene;
 import InJavE2D.object.GameObject;
 import InJavE2D.render.Camera;
 import InJavE2D.render.Renderer;
+import InJavE2D.scripting.InJavEScript;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public abstract class Scene {
     protected float fixedTimeDelay;
     private boolean isRunning = false;
     protected List<GameObject> gameObjects = new ArrayList<>();
+    protected List<InJavEScript> sceneScripts = new ArrayList<>();
 
     public Scene() { }
 
@@ -24,6 +26,10 @@ public abstract class Scene {
         for (GameObject gameobject : gameObjects) {
             gameobject.start();
             this.renderer.add(gameobject);
+        }
+
+        for (InJavEScript script : sceneScripts) {
+            script.start();
         }
         isRunning = true;
     }
@@ -38,7 +44,18 @@ public abstract class Scene {
         }
     }
 
+    public void addScriptToScene(InJavEScript script) {
+        if (!isRunning) {
+            sceneScripts.add(script);
+        } else {
+            sceneScripts.add(script);
+            script.awake();
+        }
+    }
+
     public abstract void update(float deltaTime);
+
+    public abstract Scene getCurrentScene();
 
     // TODO: Fix the 'fixedUpdate()' function to work.
     public abstract void fixedUpdate(float fixedTimeDelay);
