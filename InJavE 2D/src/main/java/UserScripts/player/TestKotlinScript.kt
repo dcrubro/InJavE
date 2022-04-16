@@ -18,9 +18,9 @@ class TestKotlinScript(currentScene: Scene?) : InJavEScript(currentScene) {
 
     }
 
-    override fun update(deltaTime: Float) {
-        var go1: GameObject = GameObject("go1", Transform(Vector2f(-100f,-100f), Vector2f(100f, 100f)))
+    /*override fun update(deltaTime: Float) {
+        var go1: GameObject = GameObject("go1", Transform(Vector2f(-100f,-100f), Vector2f(100f, 100f)), 0)
         go1.addComponent(SpriteRenderer(Vector4f(100f, 100f, 1f, 1f)))
         currentScene.addGameObjectToScene(go1)
-    }
+    }*/
 }

@@ -4,6 +4,7 @@ import InJavE2D.object.GameObject;
 import InJavE2D.render.Camera;
 import InJavE2D.render.Renderer;
 import InJavE2D.scripting.InJavEScript;
+import imgui.ImGui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public abstract class Scene {
     private boolean isRunning = false;
     protected List<GameObject> gameObjects = new ArrayList<>();
     protected List<InJavEScript> sceneScripts = new ArrayList<>();
+    protected GameObject activeGameObject = null;
 
     public Scene() { }
 
@@ -63,6 +65,18 @@ public abstract class Scene {
     public Camera getCamera() {
         return this.camera;
     }
+
+    public void sceneImGui() {
+        if (activeGameObject != null) {
+            ImGui.begin("Inspector");
+            activeGameObject.imgui();
+            ImGui.end();
+        }
+
+        imgui();
+    }
+
+    public void imgui() { }
 
     // Fixed time delay getter/setter
     public float getFixedTimeDelay() { return this.fixedTimeDelay; }

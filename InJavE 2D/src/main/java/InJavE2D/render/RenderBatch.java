@@ -1,8 +1,11 @@
 package InJavE2D.render;
 
 import InJavE2D.Window;
+import InJavE2D.object.Component;
 import InJavE2D.object.components.SpriteRenderer;
+import InJavE2D.object.components.Spritesheet;
 import InJavE2D.util.AssetPool;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -14,7 +17,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-public class RenderBatch {
+public class RenderBatch implements Comparable<RenderBatch> {
 
     // Vertex
     // ==========
@@ -42,8 +45,10 @@ public class RenderBatch {
     private int vaoID, vboID;
     private int maxBatchSize;
     private Shader shader;
+    private int zIndex;
 
-    public RenderBatch(int maxBatchSize) {
+    public RenderBatch(int maxBatchSize, int zIndex) {
+        this.zIndex = zIndex;
         shader = AssetPool.getShader("assets/shaders/default.glsl");
         this.sprites = new SpriteRenderer[maxBatchSize];
         this.maxBatchSize = maxBatchSize;
@@ -107,6 +112,22 @@ public class RenderBatch {
     }
 
     public void render() {
+        boolean rebufferData = false;
+
+        for (int i = 0; i < numSprites; i++) {
+            SpriteRenderer spr = sprites[i];
+            if (spr.isDirty()) {
+                loadVertexProperties(i);
+                spr.setClean();
+                rebufferData = true;
+            }
+        }
+
+        if (rebufferData) {
+            glBindBuffer(GL_ARRAY_BUFFER, vboID);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
+        }
+
         /*
            For now it rebuffers all data every frame,
            which is fucking stupid. But it's still
@@ -234,4 +255,11 @@ public class RenderBatch {
     }
     public boolean hasTextureRoom() { return this.textures.size() < 8; }
     public boolean hasTexture(Texture tex) { return this.textures.contains(tex); }
+
+    public int getzIndex() { return zIndex; }
+
+    @Override
+    public int compareTo(RenderBatch o) {
+        return Integer.compare(this.zIndex, o.getzIndex());
+    }
 }

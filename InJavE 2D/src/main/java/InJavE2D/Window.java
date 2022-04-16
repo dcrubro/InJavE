@@ -1,5 +1,6 @@
 package InJavE2D;
 
+import InJavE2D.imgui.ImGuiLayer;
 import InJavE2D.input.KeyListener;
 import InJavE2D.input.MouseListener;
 import InJavE2D.scene.LevelEditorScene;
@@ -21,7 +22,9 @@ public class Window {
     private int width, height;
     private String title;
     private long glfwWindow;
+    private ImGuiLayer imGuiLayer;
 
+    private boolean isFirstRun = true;
     private boolean isDebug;
 
     public float r, g, b, a;
@@ -34,10 +37,10 @@ public class Window {
     private Window() {
         this.width = 1920;
         this.height = 1080;
-        this.title = "InJave 2D Window";
-        r = 0;
-        b = 0;
-        g = 0;
+        this.title = "InJave2D Window";
+        r = 1;
+        b = 1;
+        g = 1;
         a = 1;
     }
 
@@ -114,6 +117,12 @@ public class Window {
         //Keyboard callbacks
         glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
 
+        //ImGui callbacks
+        glfwSetWindowSizeCallback(glfwWindow, (window, newWidth, newHeight) -> {
+            Window.setWidth(newWidth);
+            Window.setHeight(newHeight);
+        });
+
         //make the OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
 
@@ -131,6 +140,11 @@ public class Window {
         bindings available for use.
         */
         GL.createCapabilities();
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        this.imGuiLayer = new ImGuiLayer(glfwWindow);
+        this.imGuiLayer.initImGui();
 
         Window.changeScene(0);
         currentScene.setFixedTimeDelay(fixedTimeDelay);
@@ -154,13 +168,32 @@ public class Window {
             if (deltaTime >= 0)
                 currentScene.update(deltaTime);
 
+            this.imGuiLayer.update(deltaTime, currentScene);
             glfwSwapBuffers(glfwWindow);
 
             endTime = Time.getTime();
             deltaTime = endTime - beginTime;
             beginTime = endTime;
 
+
+
             //System.out.println("Render complete!");
         }
+    }
+
+    public static int getWidth() {
+        return get().width;
+    }
+
+    public static void setWidth(int width) {
+        get().width = width;
+    }
+
+    public static int getHeight() {
+        return get().height;
+    }
+
+    public static void setHeight(int height) {
+        get().height = height;
     }
 }
