@@ -16,5 +16,5 @@ The project uses **Gradle**. In a **BASH** shell (others work fine), navigate to
 You can add your own ***scripts*** and ***assets*** and you can also edit the ***source*** (working on proper documentation soon).
 
 
-##----------------------------------------------------------------------
+## ----------------------------------------------------------------------
 The ***"build"*** folder is usually not up-to-date. Build the project yourself to get it up-to-date.
