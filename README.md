@@ -10,7 +10,7 @@ To make sure that you are using the correct version of **JDK** open your **Comma
 Load this as a project in **IntelliJ IDEA** (if it works you can use **eclipse** as well (or any IDE for that matter)).
 
 ## Building the project
-The project uses **Gradle**. In a **BASH** shell (others work fine), navigate to the folder that you cloned the project into (or just copied the files) and run **./gradlew** (that should work).
+Build the project with all dependecies using a build artifact in IntelliJ IDEA (dependecies required by Jar).
 
 ## Using the engine
 You can add your own ***scripts*** and ***assets*** and you can also edit the ***source*** (working on proper documentation soon).
